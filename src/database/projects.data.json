@@ -1,0 +1,33 @@
+{
+  "fundamentalprojectData": [
+    "birthday buddy",
+    "tours",
+    "reviews",
+    "accordion",
+    "menu",
+    "tabs",
+    "slider",
+    "lorem ipsum",
+    "color generator",
+    "grocery bud",
+    "navbar",
+    "sidebar and modal",
+    "strapi menu",
+    "cart",
+    "cocktails"
+  ],
+  "complexProjectData": ["E-commerce", "jobster"],
+  "additionalProjectData": [
+    "github users",
+    "slider",
+    "stripe menu",
+    "markdow preview",
+    "random person",
+    "pagination",
+    "stock photos",
+    "dark mode",
+    "movies DB",
+    "hacker news",
+    "quiz"
+  ]
+}
