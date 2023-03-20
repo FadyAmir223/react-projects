@@ -23,7 +23,7 @@ const LoremIpsum = () => {
     max = 8;
 
   const [currNum, setCurrNum] = useState(1);
-  const [dataSlice, setDataSlice] = useState('0');
+  const [dataSlice, setDataSlice] = useState(0);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const nextNum = +e.target.value;
@@ -32,7 +32,13 @@ const LoremIpsum = () => {
 
   const handlesubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setDataSlice(e.target.elements.namedItem('paragraphs').value);
+    setDataSlice(
+      +(
+        (e.target as HTMLFormElement).elements.namedItem(
+          'paragraphs'
+        ) as HTMLInputElement
+      )?.value
+    );
   };
 
   return (
@@ -65,14 +71,11 @@ const LoremIpsum = () => {
           </form>
 
           <div>
-            {
-              // /* {generate !== 0 && */
-              data.slice(0, dataSlice).map((i) => (
-                <div key={i} className="mb-6 text-stone-800">
-                  <p className="text-gray-200 leading-7">{i}</p>
-                </div>
-              ))
-            }
+            {data.slice(0, dataSlice).map((i) => (
+              <div key={i} className="mb-6 text-stone-800">
+                <p className="text-gray-200 leading-7">{i}</p>
+              </div>
+            ))}
           </div>
         </section>
       </article>

@@ -26,6 +26,9 @@ module.exports = {
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
       },
+      animation: {
+        // scale: 'scale 3s linear infinite',
+      },
     },
   },
   plugins: [], // require('@tailwindcss/line-clamp')

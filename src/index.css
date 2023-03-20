@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes scale {
+  0%,
+  100% {
+    transform: scale(2);
+  }
+  50% {
+    transform: scale(2.5);
+  }
+}

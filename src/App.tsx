@@ -3,6 +3,7 @@ import { Route } from 'react-router';
 import { Routes } from 'react-router-dom';
 
 import projectData from './database/projects.data.json';
+// import './App.css';
 
 const BirthdayBuddy = lazy(
   () => import('./routes/birthday-buddy/birthday-buddy.component')
