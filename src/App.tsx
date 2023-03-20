@@ -1,50 +1,54 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { Route } from 'react-router';
 import { Routes } from 'react-router-dom';
 
 import projectData from './database/projects.data.json';
 
-import BirthdayBuddy from './routes/birthday-buddy/birthday-buddy.component';
-import Home from './routes/home/home.component';
-import Tours from './routes/tours/tours.component';
-import Reviews from './routes/reviews/reviews.component';
-import Accorion from './routes/accordion.component';
-import Menu from './routes/menu.component';
-import Tabs from './routes/tabs.component';
-import Slider from './routes/slider.component';
-import LoremIpsum from './routes/lorem-pusum.component';
-import ColorGen from './routes/color-gen.component';
-import Grocery from './routes/grocery.component';
-import Navbar from './routes/navbar.component';
-import SidebarModal from './routes/sidebar-modal.component';
-import StrApi from './routes/strapi.component';
-import Cart from './routes/cart.component';
-import Cocktails from './routes/cocktails.component';
-import Ecommerce from './routes/e-commerce.component';
-import Jobster from './routes/jobster.component';
-import GithubUsers from './routes/github-users.component';
-import SliderAdv from './routes/slider-adv.component';
-import StripeMenu from './routes/stripe-menu.component';
-import MarkdownPreview from './routes/markdown-preview.component';
-import RandomPerson from './routes/random-person.component';
-import Pagination from './routes/pagination.component';
-import StockPhotos from './routes/stock-photos.component';
-import DarkMode from './routes/dark-mode.component';
-import MoviesDB from './routes/movies-db.component';
-import HackerNews from './routes/hacker-news.component';
-import Quiz from './routes/quiz.component';
+const BirthdayBuddy = lazy(
+  () => import('./routes/birthday-buddy/birthday-buddy.component')
+);
+const Home = lazy(() => import('./routes/home/home.component'));
+const Tours = lazy(() => import('./routes/tours/tours.component'));
+const Reviews = lazy(() => import('./routes/reviews/reviews.component'));
+const Accorion = lazy(() => import('./routes/accordion.component'));
+const Menu = lazy(() => import('./routes/menu.component'));
+const Tabs = lazy(() => import('./routes/tabs.component'));
+const Slider = lazy(() => import('./routes/slider.component'));
+const LoremIpsum = lazy(() => import('./routes/lorem-pusum.component'));
+const ColorGen = lazy(() => import('./routes/color-gen.component'));
+const Grocery = lazy(() => import('./routes/grocery.component'));
+const Navbar = lazy(() => import('./routes/navbar.component'));
+const SidebarModal = lazy(() => import('./routes/sidebar-modal.component'));
+const StrApi = lazy(() => import('./routes/strapi.component'));
+const Cart = lazy(() => import('./routes/cart.component'));
+const Cocktails = lazy(() => import('./routes/cocktails.component'));
+const Ecommerce = lazy(() => import('./routes/e-commerce.component'));
+const Jobster = lazy(() => import('./routes/jobster.component'));
+const GithubUsers = lazy(() => import('./routes/github-users.component'));
+const SliderAdv = lazy(() => import('./routes/slider-adv.component'));
+const StripeMenu = lazy(() => import('./routes/stripe-menu.component'));
+const MarkdownPreview = lazy(
+  () => import('./routes/markdown-preview.component')
+);
+const RandomPerson = lazy(() => import('./routes/random-person.component'));
+const Pagination = lazy(() => import('./routes/pagination.component'));
+const StockPhotos = lazy(() => import('./routes/stock-photos.component'));
+const DarkMode = lazy(() => import('./routes/dark-mode.component'));
+const MoviesDB = lazy(() => import('./routes/movies-db.component'));
+const HackerNews = lazy(() => import('./routes/hacker-news.component'));
+const Quiz = lazy(() => import('./routes/quiz.component'));
 
 const routes = [
   <BirthdayBuddy />,
   <Tours />,
   <Reviews />,
-  <Accorion />,
+  <Accorion />, //
   <Menu />,
-  <Tabs />,
+  <Tabs />, //
   <Slider />,
   <LoremIpsum />,
+  <ColorGen />, //
 
-  <ColorGen />,
   <Grocery />,
   <Navbar />,
   <SidebarModal />,
@@ -72,18 +76,20 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      {routes.map((element, idx) => {
-        const allProjects = [
-          ...projectData.fundamentalprojectData,
-          ...projectData.complexProjectData,
-          ...projectData.additionalProjectData,
-        ];
-        const path = allProjects[idx].replace(' ', '-').toLowerCase();
-        return <Route key={path} path={path} element={element} />;
-      })}
-    </Routes>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {routes.map((element, idx) => {
+          const allProjects = [
+            ...projectData.fundamentalprojectData,
+            ...projectData.complexProjectData,
+            ...projectData.additionalProjectData,
+          ];
+          const path = allProjects[idx].replace(' ', '-').toLowerCase();
+          return <Route key={path} path={path} element={element} />;
+        })}
+      </Routes>
+    </Suspense>
   );
 }
 

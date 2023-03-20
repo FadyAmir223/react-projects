@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
 const data = [
   'Jelly sweet roll jelly beans biscuit pie macaroon chocolate donut. Carrot cake caramels pie sweet apple pie tiramisu carrot cake. Marzipan marshmallow croissant tootsie roll lollipop. Cupcake lemon drops bear claw gummies. Jelly bear claw gummi bears lollipop cotton candy gummi bears chocolate bar cake cookie. Cupcake muffin danish muffin cookie gummies. Jelly beans tiramisu pudding. Toffee soufflé chocolate cake pastry brownie. Oat cake halvah sweet roll cotton candy croissant lollipop. Macaroon tiramisu chocolate bar candy candy carrot cake jelly sweet. Gummies croissant macaroon dessert. Chocolate cake dragée pie.',
@@ -23,15 +23,16 @@ const LoremIpsum = () => {
     max = 8;
 
   const [currNum, setCurrNum] = useState(1);
-  const [generate, setGenerate] = useState({ currP: 0, doGen: false });
+  const [dataSlice, setDataSlice] = useState('0');
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const nextNum = +e.target.value;
     if (nextNum >= min && nextNum <= max) setCurrNum(nextNum);
   };
 
-  const handleGenerate = () => {
-    setGenerate({ currP: currNum, doGen: true });
+  const handlesubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setDataSlice(e.target.elements.namedItem('paragraphs').value);
   };
 
   return (
@@ -42,34 +43,36 @@ const LoremIpsum = () => {
             tired of lorem ipsum?
           </h2>
 
-          <div className="flex justify-center gap-x-2 mb-10">
+          <form
+            className="flex justify-center gap-x-2 mb-10"
+            onSubmit={handlesubmit}
+          >
             <span className="capitalize">paragraphs:</span>
             <input
               type="number"
-              name=""
+              name="paragraphs"
               id=""
               min={min}
               max={max}
               step="1"
               className="pl-2 text-lg"
               value={currNum}
-              onChange={(e) => handleInputChange(e)}
+              onChange={handleInputChange}
             />
-            <button
-              className="px-2 py-1 capitalize bg-green-600 duration-200 hover:bg-green-900 rounded-md"
-              onClick={handleGenerate}
-            >
+            <button className="px-2 py-1 capitalize bg-green-600 duration-200 hover:bg-green-900 rounded-md">
               generate
             </button>
-          </div>
+          </form>
 
           <div>
-            {generate &&
-              data.slice(0, generate.currP).map((i) => (
+            {
+              // /* {generate !== 0 && */
+              data.slice(0, dataSlice).map((i) => (
                 <div key={i} className="mb-6 text-stone-800">
                   <p className="text-gray-200 leading-7">{i}</p>
                 </div>
-              ))}
+              ))
+            }
           </div>
         </section>
       </article>
