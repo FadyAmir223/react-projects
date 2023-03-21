@@ -50,8 +50,8 @@ const routes = [
   <LoremIpsum />,
   <ColorGen />, //
   <Grocery />,
-
   <Navbar />,
+
   <SidebarModal />,
   <StrApi />,
   <Cart />,

@@ -27,7 +27,7 @@ const sidebarLinks = [
   },
   {
     icon: <GoFile key="" />,
-    text: 'doffcuments',
+    text: 'documents',
   },
 ];
 
@@ -120,7 +120,7 @@ const Sidebar = ({ isHeader = true }: { isHeader?: boolean }) => {
         {isHeader && <Header />}
 
         <main
-          className="container mx-auto mt-3"
+          className="container mx-auto px-6 pt-3"
           style={{ minHeight: `calc(100vh - 6rem)` }}
         >
           <Outlet />
@@ -180,13 +180,15 @@ const Header = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useContext(SidebarContext);
 
   return (
-    <header className="container flex px-6 py-8 bg-stone-50 h-20">
-      {!isSidebarOpen && (
-        <GiHamburgerMenu
-          className="text-blue-400 hover:text-blue-300 duration-150 cursor-pointer animate-scale animate-[scale_3s_ease-in-out_infinite]"
-          onClick={() => setIsSidebarOpen(true)}
-        />
-      )}
+    <header className="px-6 py-8 bg-stone-50 h-20">
+      <div className="flex container mx-auto">
+        {!isSidebarOpen && (
+          <GiHamburgerMenu
+            className="text-blue-400 hover:text-blue-300 duration-150 cursor-pointer animate-scale animate-[scale_3s_ease-in-out_infinite]"
+            onClick={() => setIsSidebarOpen(true)}
+          />
+        )}
+      </div>
     </header>
   );
 };
