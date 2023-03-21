@@ -120,7 +120,7 @@ const Sidebar = ({ isHeader = true }: { isHeader?: boolean }) => {
         {isHeader && <Header />}
 
         <main
-          className="container mx-auto bg-red-50 mt-3"
+          className="container mx-auto mt-3"
           style={{ minHeight: `calc(100vh - 6rem)` }}
         >
           <Outlet />
