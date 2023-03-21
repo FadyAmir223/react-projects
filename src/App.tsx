@@ -49,8 +49,8 @@ const routes = [
   <Slider />,
   <LoremIpsum />,
   <ColorGen />, //
-
   <Grocery />,
+
   <Navbar />,
   <SidebarModal />,
   <StrApi />,
@@ -87,7 +87,7 @@ function App() {
             ...projectData.additionalProjectData,
           ];
           const path = allProjects[idx].replace(' ', '-').toLowerCase();
-          return <Route key={path} path={path} element={element} />;
+          return <Route key={path} path={`${path}/*`} element={element} />;
         })}
       </Routes>
     </Suspense>
