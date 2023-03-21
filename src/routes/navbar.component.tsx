@@ -27,26 +27,26 @@ const sidebarLinks = [
   },
   {
     icon: <GoFile key="" />,
-    text: 'ducuments',
+    text: 'doffcuments',
   },
 ];
 
 const contactSocial = [
   {
     icon: <BsFacebook />,
-    path: 'facebook.com',
+    path: 'https://www.facebook.com',
   },
   {
     icon: <BsTwitter />,
-    path: 'twitter.com',
+    path: 'https://www.twitter.com',
   },
   {
     icon: <AiFillLinkedin />,
-    path: 'linkedin.com',
+    path: 'https://www.linkedin.com',
   },
   {
     icon: <GiCutDiamond />,
-    path: 'diamond.com',
+    path: 'https://www.diamond.com',
   },
 ];
 
@@ -55,16 +55,18 @@ const Navbar = () => {
     <SidebarProvider>
       <Routes>
         <Route path="/" element={<Sidebar />}>
-          <Route index element={<ModalPage />} />
-          <Route path="home" element={<Home />} />
-          {/* <Route path="" element={} /> */}
+          <Route index path="home" element={<ModalPage />} />
+          <Route path="team" element={<Team />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="calendar" element={<Calender />} />
+          <Route path="documents" element={<Documents />} />
         </Route>
       </Routes>
     </SidebarProvider>
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ isHeader = true }: { isHeader?: boolean }) => {
   const { isSidebarOpen, setIsSidebarOpen } = useContext(SidebarContext);
 
   return (
@@ -82,6 +84,7 @@ const Sidebar = () => {
             onClick={() => setIsSidebarOpen(false)}
           />
         </div>
+
         <nav>
           {sidebarLinks.map(({ icon, text }) => (
             <Link
@@ -94,6 +97,7 @@ const Sidebar = () => {
             </Link>
           ))}
         </nav>
+
         <div className="flex justify-center gap-x-7">
           {contactSocial.map(({ icon, path }) => (
             <a
@@ -113,10 +117,11 @@ const Sidebar = () => {
         }`}
         style={{ width: `calc(100% - ${isSidebarOpen ? '24rem' : '0px'})` }}
       >
-        <Header />
+        {isHeader && <Header />}
+
         <main
-          className="container mx-auto px-6 grid place-items-center"
-          style={{ minHeight: `calc(100vh - 5rem)` }}
+          className="container mx-auto bg-red-50 mt-3"
+          style={{ minHeight: `calc(100vh - 6rem)` }}
         >
           <Outlet />
         </main>
@@ -136,7 +141,11 @@ const ModalPage = () => {
     <>
       <main
         className="container mx-auto px-6 grid place-items-center"
-        style={{ minHeight: `calc(100vh - 5rem)` }}
+        style={
+          {
+            minHeight: `calc(100vh - 5rem - 0.75rem)`,
+          } /* header:  h-20 & main: pt-3 */
+        }
       >
         <button
           className=" capitalize text-sm px-2 py-1 bg-blue-300 hover:bg-blue-400 rounded-sm duration-200 tracking-wider"
@@ -167,19 +176,11 @@ const ModalPage = () => {
   );
 };
 
-const Home = () => {
-  return (
-    <div>
-      <h1>HOME</h1>
-    </div>
-  );
-};
-
 const Header = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useContext(SidebarContext);
 
   return (
-    <header className="container flex px-6 py-8 h-20">
+    <header className="container flex px-6 py-8 bg-stone-50 h-20">
       {!isSidebarOpen && (
         <GiHamburgerMenu
           className="text-blue-400 hover:text-blue-300 duration-150 cursor-pointer animate-scale animate-[scale_3s_ease-in-out_infinite]"
@@ -187,6 +188,37 @@ const Header = () => {
         />
       )}
     </header>
+  );
+};
+
+const Team = () => {
+  return (
+    <main>
+      <h1>TEAM</h1>
+    </main>
+  );
+};
+
+const Projects = () => {
+  return (
+    <main>
+      <h1>PROJECTS</h1>
+    </main>
+  );
+};
+
+const Calender = () => {
+  return (
+    <main>
+      <h1>CALENDER</h1>
+    </main>
+  );
+};
+const Documents = () => {
+  return (
+    <main>
+      <h1>DOCUMENTS</h1>
+    </main>
   );
 };
 
