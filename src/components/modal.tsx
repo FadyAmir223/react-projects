@@ -10,7 +10,7 @@ const Modal = ({ children }: ModalProps) => {
   if (!elRef.current) elRef.current = document.createElement('div');
 
   useEffect(() => {
-    if (elRef.current === null) return;
+    if (!elRef.current) return;
     const modalRoot = document.getElementById('modal');
     modalRoot?.appendChild(elRef.current);
 
