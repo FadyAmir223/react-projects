@@ -1,14 +1,5 @@
 import { createContext, useEffect, useState, ReactNode } from 'react';
 
-export const Cartcontext = createContext({
-  cartData: [],
-  incrementItem: () => null,
-  decrementItem: () => null,
-  deleteItem: () => null,
-  totalItems: 0,
-  setTotalItems: () => null,
-});
-
 type CartData = {
   id: string;
   title: string;
@@ -17,9 +8,30 @@ type CartData = {
   amount: number;
 };
 
+type CartcontextType = {
+  cartData: CartData[];
+  incrementItem: (title: string) => void;
+  decrementItem: (title: string) => void;
+  deleteItem: (title: string) => void;
+  clearItems: () => void;
+  totalItems: number;
+  totalPrice: number;
+};
+
+export const Cartcontext = createContext<CartcontextType>({
+  cartData: [],
+  incrementItem: () => null,
+  decrementItem: () => null,
+  deleteItem: () => null,
+  clearItems: () => null,
+  totalItems: 0,
+  totalPrice: 0,
+});
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartData, setCartData] = useState([] as CartData[]);
   const [totalItems, setTotalItems] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const url = 'https://course-api.com/react-useReducer-cart-project';
@@ -32,6 +44,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setTotalItems(cartData.reduce((acc, { amount }) => acc + amount, 0));
+    setTotalPrice(
+      // .toFixed(2)
+      Number(
+        cartData
+          .reduce((acc, { amount, price }) => acc + amount * +price, 0)
+          .toFixed(2)
+      )
+    );
   }, [cartData]);
 
   const incrementItem = (title_: string) => {
@@ -58,5 +78,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  return <Cartcontext.Provider>{children}</Cartcontext.Provider>;
+  const clearItems = () => {
+    setCartData([]);
+  };
+
+  const value = {
+    cartData,
+    incrementItem,
+    decrementItem,
+    deleteItem,
+    clearItems,
+    totalItems,
+    totalPrice,
+  };
+
+  return <Cartcontext.Provider value={value}>{children}</Cartcontext.Provider>;
 };
