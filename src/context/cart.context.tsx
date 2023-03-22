@@ -45,7 +45,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setTotalItems(cartData.reduce((acc, { amount }) => acc + amount, 0));
     setTotalPrice(
-      // .toFixed(2)
       Number(
         cartData
           .reduce((acc, { amount, price }) => acc + amount * +price, 0)

@@ -1,28 +1,59 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
 import { FaCartPlus } from 'react-icons/fa';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io';
 import { BiDollar } from 'react-icons/bi';
-import { CartProvider } from '../context/cart.context';
-import { Cartcontext } from '../context/cart.context';
+import {} from 'react-redux';
+import { useSelector, useDispatch, Provider } from 'react-redux';
+import {
+  selectCartData,
+  selectTotalItems,
+  selectTotalPrice,
+} from '../store/cart/cart.selector';
+import {
+  clearItems,
+  decrementItem,
+  deleteItem,
+  fetchItems,
+  incrementItem,
+} from '../store/cart/cart.actions';
+import { CartData } from '../store/cart/cart.types';
+import { store } from '../store/store';
 
 const Cart = () => {
   return (
-    <CartProvider>
+    <Provider store={store}>
       <Cart_ />
-    </CartProvider>
+    </Provider>
   );
 };
 
 const Cart_ = () => {
-  const {
-    cartData,
-    totalItems,
-    totalPrice,
-    incrementItem,
-    decrementItem,
-    deleteItem,
-    clearItems,
-  } = useContext(Cartcontext);
+  const cartData = useSelector(selectCartData);
+  const totalItems = useSelector(selectTotalItems);
+  const totalPrice = useSelector(selectTotalPrice);
+
+  const dispatch = useDispatch();
+
+  const fetchItems_ = (cartData: CartData[]) => dispatch(fetchItems(cartData));
+
+  const incrementItem_ = (title: string) =>
+    dispatch(incrementItem(cartData, title));
+
+  const decrementItem_ = (title: string) =>
+    dispatch(decrementItem(cartData, title));
+
+  const deleteItem_ = (title: string) => dispatch(deleteItem(cartData, title));
+
+  const clearItems_ = () => dispatch(clearItems());
+
+  useEffect(() => {
+    const url = 'https://course-api.com/react-useReducer-cart-project';
+    (async () => {
+      const res = await fetch(url);
+      const data = await res.json();
+      fetchItems_(data);
+    })();
+  }, []);
 
   return (
     <main className="">
@@ -48,7 +79,7 @@ const Cart_ = () => {
         {cartData.length !== 0 ? (
           <>
             <div className="">
-              {cartData.map(({ id, img, title, price, amount }) => (
+              {cartData.map(({ id, img, title, price, amount }: CartData) => (
                 <div
                   key={id}
                   className="flex justify-between items-center mb-4 last:mb-0"
@@ -65,7 +96,7 @@ const Cart_ = () => {
                       </span>
                       <button
                         className="text-blue-600 text-sm"
-                        onClick={() => deleteItem(title)}
+                        onClick={() => deleteItem_(title)}
                       >
                         remove
                       </button>
@@ -74,12 +105,12 @@ const Cart_ = () => {
                   <div className="text-center">
                     <IoIosArrowUp
                       className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
-                      onClick={() => incrementItem(title)}
+                      onClick={() => incrementItem_(title)}
                     />
                     <span className="">{amount}</span>
                     <IoIosArrowDown
                       className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
-                      onClick={() => decrementItem(title)}
+                      onClick={() => decrementItem_(title)}
                     />
                   </div>
                 </div>
@@ -95,7 +126,7 @@ const Cart_ = () => {
               </div>
               <button
                 className="capitalize px-2 py-1 bg-gray-700 text-blue-700 hover:bg-violet-300 hover:text-blue-400 mt-7 rounded-md duration-200"
-                onClick={clearItems}
+                onClick={clearItems_}
               >
                 clear cart
               </button>

@@ -1,8 +1,8 @@
-import { CART_ACTIONS, CartData } from './cart.types';
+import { CART_ACTIONS } from './cart.types';
 import { AnyAction } from 'redux';
 
 const INIT_STATE = {
-  cartData: [] as CartData[],
+  cartData: [],
 };
 
 export const cartReducer = (state = INIT_STATE, action = {} as AnyAction) => {
@@ -12,7 +12,7 @@ export const cartReducer = (state = INIT_STATE, action = {} as AnyAction) => {
     case CART_ACTIONS.SET_ITEMS:
       return {
         ...state,
-        payload,
+        cartData: payload,
       };
     default:
       return state;

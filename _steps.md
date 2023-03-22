@@ -17,7 +17,7 @@ npm i react-icons
 
 # React
 npm i react-router-dom@6
-npm i redux react-redux redux-logger redux-persist reselect
+npm i redux react-redux redux-logger reselect redux-persist
 npm i redux-thunk
 npm i @tanstack/react-query
 
