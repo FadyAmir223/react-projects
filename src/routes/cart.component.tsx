@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import { FaCartPlus } from 'react-icons/fa';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io';
 import { BiDollar } from 'react-icons/bi';
@@ -36,14 +36,6 @@ const Cart_ = () => {
 
   const fetchItems_ = (cartData: CartData[]) => dispatch(fetchItems(cartData));
 
-  const incrementItem_ = (title: string) =>
-    dispatch(incrementItem(cartData, title));
-
-  const decrementItem_ = (title: string) =>
-    dispatch(decrementItem(cartData, title));
-
-  const deleteItem_ = (title: string) => dispatch(deleteItem(cartData, title));
-
   const clearItems_ = () => dispatch(clearItems());
 
   useEffect(() => {
@@ -79,41 +71,8 @@ const Cart_ = () => {
         {cartData.length !== 0 ? (
           <>
             <div className="">
-              {cartData.map(({ id, img, title, price, amount }: CartData) => (
-                <div
-                  key={id}
-                  className="flex justify-between items-center mb-4 last:mb-0"
-                >
-                  <div className="flex items-center">
-                    <img src={img} alt={title} className="mr-6 h-20" />
-                    <div className="">
-                      <h5 className="tracking-widest text-gray-700 -mb-[2px]">
-                        {title}
-                      </h5>
-                      <span className="text-gray-500 flex items-center relative -left-[3px] top-[2px] text-[15px]">
-                        <BiDollar className="inline-block relative -top-[1px]" />
-                        {price}
-                      </span>
-                      <button
-                        className="text-blue-600 text-sm"
-                        onClick={() => deleteItem_(title)}
-                      >
-                        remove
-                      </button>
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <IoIosArrowUp
-                      className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
-                      onClick={() => incrementItem_(title)}
-                    />
-                    <span className="">{amount}</span>
-                    <IoIosArrowDown
-                      className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
-                      onClick={() => decrementItem_(title)}
-                    />
-                  </div>
-                </div>
+              {cartData.map((cartItem: CartData) => (
+                <CartItem key={cartItem.id} {...cartItem} />
               ))}
             </div>
             <div className="pt-4 my-14 border-t-2 border-t-gray-300 text-center">
@@ -125,7 +84,7 @@ const Cart_ = () => {
                 </span>
               </div>
               <button
-                className="capitalize px-2 py-1 bg-gray-700 text-blue-700 hover:bg-violet-300 hover:text-blue-400 mt-7 rounded-md duration-200"
+                className="capitalize px-2 py-1 bg-gray-800 text-blue-700 hover:bg-violet-300 hover:text-blue-400 mt-7 rounded-md duration-200"
                 onClick={clearItems_}
               >
                 clear cart
@@ -141,5 +100,51 @@ const Cart_ = () => {
     </main>
   );
 };
+
+const CartItem = memo(({ id, img, title, price, amount }: CartData) => {
+  const cartData = useSelector(selectCartData);
+
+  const dispatch = useDispatch();
+
+  const incrementItem_ = (title: string) =>
+    dispatch(incrementItem(cartData, title));
+
+  const decrementItem_ = (title: string) =>
+    dispatch(decrementItem(cartData, title));
+
+  const deleteItem_ = (title: string) => dispatch(deleteItem(cartData, title));
+
+  return (
+    <div key={id} className="flex justify-between items-center mb-4 last:mb-0">
+      <div className="flex items-center">
+        <img src={img} alt={title} className="mr-6 h-20" />
+        <div className="">
+          <h5 className="tracking-widest text-gray-700 -mb-[2px]">{title}</h5>
+          <span className="text-gray-500 flex items-center relative -left-[3px] top-[2px] text-[15px]">
+            <BiDollar className="inline-block relative -top-[1px]" />
+            {price}
+          </span>
+          <button
+            className="text-blue-600 text-sm"
+            onClick={() => deleteItem_(title)}
+          >
+            remove
+          </button>
+        </div>
+      </div>
+      <div className="text-center">
+        <IoIosArrowUp
+          className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
+          onClick={() => incrementItem_(title)}
+        />
+        <span className="">{amount}</span>
+        <IoIosArrowDown
+          className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
+          onClick={() => decrementItem_(title)}
+        />
+      </div>
+    </div>
+  );
+});
 
 export default Cart;

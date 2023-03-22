@@ -10,11 +10,8 @@ const createAction = <T>(type: string, payload: T): ActionWithPayload<T> => ({
   payload,
 });
 
-export const fetchItems = (cartData: CartData[]) => {
-  console.log('fezza');
-
-  return createAction(CART_ACTIONS.SET_ITEMS, cartData);
-};
+export const fetchItems = (cartData: CartData[]) =>
+  createAction(CART_ACTIONS.SET_ITEMS, cartData);
 
 export const incrementItem = (cartData: CartData[], title_: string) => {
   const payload = cartData.map((item) =>
@@ -38,6 +35,4 @@ export const deleteItem = (cartData: CartData[], title_: string) => {
   return createAction(CART_ACTIONS.SET_ITEMS, payload);
 };
 
-export const clearItems = () => {
-  return createAction(CART_ACTIONS.SET_ITEMS, []);
-};
+export const clearItems = () => createAction(CART_ACTIONS.SET_ITEMS, []);
