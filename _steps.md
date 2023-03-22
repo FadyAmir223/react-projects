@@ -9,26 +9,29 @@ npm i
 npm run dev
 
 npm i -D eslint-plugin-react eslint-plugin-react-hooks
+npm i -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
 
+npm i -D vite-plugin-svgr
+npm i react-icons
 
 # React
 npm i react-router-dom@6
-npm i @tanstack/react-query
-npm i redux react-redux redux-logger
-npm i reselect
-npm i redux-persist
+npm i redux react-redux redux-logger redux-persist reselect
 npm i redux-thunk
-
+npm i @tanstack/react-query
 
 # extra
+npm i firebase
+
 npm i sass
 npm i styled-components
-npm i firebase
-npm i -D vite-plugin-svgr
+
 npm i @stripe/stripe-js @stripe/react-stripe-js
 npm i stripe dotenv
 
 npm i -g netlify-cli
+
 npm i -D typescript @types/react @types/react-dom @types/node @types/node
 
 
@@ -75,28 +78,15 @@ git clone -b <branch> <repo-ssh-url>
 
 
 # tailwind
-npm i -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-
-# optional
-npm i @tailwindcss/line-clamp
-
-
-tailwind.comfig.cjs
-  mode: 'jit',
-  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
 
 index.css
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
 
+## tailwind optional
+npm i @tailwindcss/line-clamp
+
 ## optional
 https://github.com/tailwindlabs/prettier-plugin-tailwindcss
 
-
-# icons
-npm i react-icons
-
-import { IconName } from "react-icons/fa";
