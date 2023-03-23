@@ -22,6 +22,9 @@ module.exports = {
         reddit: '#ff4500',
         whatsapp: '#25d366',
         linkedin: '#0a66c2',
+
+        cocktails: '#476a2e',
+        cocktailsMain: '#f1f5f8',
       },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],

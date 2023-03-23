@@ -53,8 +53,8 @@ const routes = [
   <Navbar />, //
   <SidebarModal />,
   <StrApi />,
-
   <Cart />,
+
   <Cocktails />,
   <Ecommerce />,
   <Jobster />,
