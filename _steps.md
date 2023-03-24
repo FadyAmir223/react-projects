@@ -34,6 +34,7 @@ npm i -g netlify-cli
 
 npm i -D typescript @types/react @types/react-dom @types/node @types/node
 
+npm i react-markdown
 
 # Github
 ## per-device

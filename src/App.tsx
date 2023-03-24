@@ -57,12 +57,15 @@ const routes = [
 
   <Cocktails />, //
   <Ecommerce />, //
+
   <Jobster />, //
   <GithubUsers />, //
   <SliderAdv />, //
   <StripeMenu />, //
+
   <MarkdownPreview />,
   <RandomPerson />,
+
   <Pagination />,
   <StockPhotos />,
   <DarkMode />,
