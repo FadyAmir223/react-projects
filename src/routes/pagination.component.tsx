@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 const url = 'https://api.github.com/users/john-smilga/followers?per_page=34';
 const slicePerPage = 10;
 
+type Data = {
+  avatar_url: string;
+  html_url: string;
+  login: string;
+};
+
 const Pagination = () => {
-  const [people, setPeople] = useState([]);
-  const [activePage, setActivePage] = useState(0);
-  const [pagesNumber, setPagesNumber] = useState(0);
+  const [people, setPeople] = useState([] as Data[]);
   const [loading, setLoading] = useState(true);
+  const [pagesNumber, setPagesNumber] = useState(0);
+  const [activePage, setActivePage] = useState(0);
 
   const handlActivePage = (idx: number) => {
-    console.log(idx);
-    console.log(Math.abs(idx % pagesNumber));
-
     setActivePage(((idx % pagesNumber) + pagesNumber) % pagesNumber);
   };
 
@@ -21,10 +24,14 @@ const Pagination = () => {
       setLoading(true);
       const res = await fetch(url);
       const data = await res.json();
-
+      const data_ = data.map(({ avatar_url, html_url, login }: Data) => ({
+        avatar_url,
+        html_url,
+        login,
+      }));
       setLoading(false);
-      setPeople(data);
-      setPagesNumber(Math.ceil(data.length / slicePerPage));
+      setPeople(data_);
+      setPagesNumber(Math.ceil(data_.length / slicePerPage));
     })();
   }, []);
 
@@ -40,29 +47,7 @@ const Pagination = () => {
             gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))',
           }}
         >
-          {people
-            .slice(activePage * slicePerPage, (activePage + 1) * slicePerPage)
-            .map(({ avatar_url, html_url, login }) => (
-              <div
-                key={html_url}
-                className="px-8 py-14 bg-white rounded-lg text-center shadow-sm"
-              >
-                <img
-                  src={avatar_url}
-                  alt={login}
-                  className="rounded-full w-32 h-32 mb-4 mx-auto"
-                />
-                <h3 className="capitalize text-[#617d98] text-sm mb-5">
-                  {login}
-                </h3>
-                <a
-                  href={html_url}
-                  className="text-white rounded-full uppercase text-xs tracking-wider cursor-pointer bg-[#49a6e9] py-[0.35rem] px-3"
-                >
-                  view profile
-                </a>
-              </div>
-            ))}
+          <PageSlice people={people} activePage={activePage} />
         </section>
         {!loading && (
           <div className="text-center">
@@ -97,5 +82,38 @@ const Pagination = () => {
     </main>
   );
 };
+
+type PageSliceProps = {
+  people: Data[];
+  activePage: number;
+};
+
+const PageSlice = memo(({ people, activePage }: PageSliceProps) => {
+  return (
+    <>
+      {people
+        .slice(activePage * slicePerPage, (activePage + 1) * slicePerPage)
+        .map(({ avatar_url, html_url, login }) => (
+          <div
+            key={html_url}
+            className="px-8 py-14 bg-white rounded-lg text-center shadow-sm"
+          >
+            <img
+              src={avatar_url}
+              alt={login}
+              className="rounded-full w-32 h-32 mb-4 mx-auto"
+            />
+            <h3 className="capitalize text-[#617d98] text-sm mb-5">{login}</h3>
+            <a
+              href={html_url}
+              className="text-white rounded-full uppercase text-xs tracking-wider cursor-pointer bg-[#49a6e9] py-[0.35rem] px-3"
+            >
+              view profile
+            </a>
+          </div>
+        ))}
+    </>
+  );
+});
 
 export default Pagination;
