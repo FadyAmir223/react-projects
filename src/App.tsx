@@ -55,12 +55,12 @@ const routes = [
   <StrApi />,
   <Cart />,
 
-  <Cocktails />,
-  <Ecommerce />,
-  <Jobster />,
-  <GithubUsers />,
-  <SliderAdv />,
-  <StripeMenu />,
+  <Cocktails />, //
+  <Ecommerce />, //
+  <Jobster />, //
+  <GithubUsers />, //
+  <SliderAdv />, //
+  <StripeMenu />, //
   <MarkdownPreview />,
   <RandomPerson />,
   <Pagination />,
