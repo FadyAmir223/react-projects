@@ -22,6 +22,9 @@ npm i redux-thunk
 npm i @tanstack/react-query
 
 # extra
+
+npm i -D @types/node
+
 npm i firebase
 
 npm i sass
@@ -35,6 +38,8 @@ npm i -g netlify-cli
 npm i -D typescript @types/react @types/react-dom @types/node @types/node
 
 npm i react-markdown
+
+npm i react-image
 
 # Github
 ## per-device
@@ -90,4 +95,3 @@ npm i @tailwindcss/line-clamp
 
 ## optional
 https://github.com/tailwindlabs/prettier-plugin-tailwindcss
-
