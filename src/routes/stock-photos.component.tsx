@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect } from 'react';
+import { FormEvent, useEffect, useReducer } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
 type Post = {
@@ -25,16 +25,55 @@ type PostProps = {
   };
 };
 
+type State = {
+  posts: Post[];
+  isLoading: boolean;
+  page: number;
+  newPage: boolean;
+  searchField: string;
+};
+
+type Action =
+  | { type: 'SET_POSTS'; payload: Post[] }
+  | { type: 'SET_IS_LOADING'; payload: boolean }
+  | { type: 'SET_PAGE'; payload: number }
+  | { type: 'SET_NEW_PAGE'; payload: boolean }
+  | { type: 'SET_SEARCH_FIELD'; payload: string };
+
+const initialState: State = {
+  posts: [],
+  isLoading: false,
+  page: 1,
+  newPage: false,
+  searchField: '',
+};
+
+const reducer = (state: State, action: Action): State => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case 'SET_POSTS':
+      return { ...state, posts: payload };
+    case 'SET_IS_LOADING':
+      return { ...state, isLoading: payload };
+    case 'SET_PAGE':
+      return { ...state, page: payload };
+    case 'SET_NEW_PAGE':
+      return { ...state, newPage: payload };
+    case 'SET_SEARCH_FIELD':
+      return { ...state, searchField: payload };
+    default:
+      return state;
+  }
+};
+
 const accessKey = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 const mainUrl = `https://api.unsplash.com/photos/`;
 const searchUrl = `https://api.unsplash.com/search/photos/`;
 
 const StockPhotos = () => {
-  const [posts, setPosts] = useState([] as Post[]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [newPage, setNewPage] = useState(false);
-  const [searchField, setSearchField] = useState('');
+  const [{ posts, isLoading, page, newPage, searchField }, dispatch] =
+    useReducer(reducer, initialState);
 
   const fetchPosts = async () => {
     if (isLoading) return;
@@ -45,7 +84,7 @@ const StockPhotos = () => {
         : `${mainUrl}?client_id=${accessKey}&page=${page}`;
 
     try {
-      setIsLoading(true);
+      dispatch({ type: 'SET_IS_LOADING', payload: true });
       const res = await fetch(url);
       const data = await res.json();
 
@@ -71,12 +110,13 @@ const StockPhotos = () => {
         })
       );
 
-      setPosts((prevPosts) =>
-        page === 1 ? newPosts : [...prevPosts, ...newPosts]
-      );
+      dispatch({
+        type: 'SET_POSTS',
+        payload: page === 1 ? newPosts : [...posts, ...newPosts],
+      });
     } finally {
-      setIsLoading(false);
-      setNewPage(false);
+      dispatch({ type: 'SET_IS_LOADING', payload: false });
+      dispatch({ type: 'SET_NEW_PAGE', payload: false });
     }
   };
 
@@ -89,13 +129,12 @@ const StockPhotos = () => {
 
   const handleScroll = () => {
     if (scrollY + innerHeight >= document.documentElement.scrollHeight)
-      setNewPage(true);
+      dispatch({ type: 'SET_NEW_PAGE', payload: true });
   };
 
   useEffect(() => {
-    if (!isLoading && newPage) {
-      setPage((prevPage) => prevPage + 1);
-    }
+    if (!isLoading && newPage)
+      dispatch({ type: 'SET_PAGE', payload: page + 1 });
   }, [newPage]);
 
   useEffect(() => {
@@ -104,17 +143,8 @@ const StockPhotos = () => {
 
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // setSearchField(
-    //   (
-    //     (e.target as HTMLFormElement).elements.namedItem(
-    //       'searchField'
-    //     ) as HTMLInputElement
-    //   )?.value
-    // );
-
-    // page === 1 ? setPage(1) :
-    fetchPosts();
+    dispatch({ type: 'SET_PAGE', payload: 1 });
+    if (page === 1) fetchPosts();
   };
 
   return (
@@ -129,13 +159,14 @@ const StockPhotos = () => {
           id=""
           className="border-b-[3px] border-b-gray-500 py-1 px-3 md:py-3 md:px-5 bg-transparent focus:outline-0 text-2xl w-full"
           value={searchField}
-          onChange={(e) => setSearchField(e.target.value)}
+          onChange={(e) =>
+            dispatch({ type: 'SET_SEARCH_FIELD', payload: e.target.value })
+          }
         />
         <button className="border-b-[3px] border-b-gray-500 text-gray-500 p-3 bg-transparent text-2xl">
           <FaSearch />
         </button>
       </form>
-
       <section
         className="grid gap-8 py-"
         style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(370px, 1fr))' }}
