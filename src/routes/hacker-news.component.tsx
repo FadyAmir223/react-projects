@@ -1,8 +1,6 @@
-import axios from 'axios';
-import { ChangeEvent, useState, useEffect } from 'react';
-import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
-import { Link } from 'react-router-dom';
-import { useDebounce } from 'usehooks-ts';
+import { useContext } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { NewsContext, NewsProvider } from '../context/news.context';
 
 type Article = {
   author: string;
@@ -14,69 +12,29 @@ type Article = {
   hidden: boolean;
 };
 
-const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?';
-
 const HackerNews = () => {
   const client = new QueryClient();
 
   return (
     <QueryClientProvider client={client}>
-      <Home />
+      <NewsProvider>
+        <Home />
+      </NewsProvider>
     </QueryClientProvider>
   );
 };
 
 const Home = () => {
-  const [news, setNews] = useState([] as Article[]);
-  const [pages, setPages] = useState(0);
-
-  const [query, setQuery] = useState('react');
-  const [currPage, setCurrPage] = useState(0);
-
-  const debouncedQuery = useDebounce(query, 1000);
-
-  const { isLoading } = useQuery(
-    ['articles', debouncedQuery, currPage],
-    async () => {
-      const url = `${API_ENDPOINT}query=${query.replace(
-        ' ',
-        '-'
-      )}&page=${currPage}`;
-      const {
-        data: { hits, nbPages },
-      } = await axios.get(url);
-
-      setPages(nbPages);
-      setNews(
-        hits
-          .map(
-            ({ author, num_comments, points, title, url, objectID }: Article) =>
-              title !== null && {
-                author,
-                num_comments,
-                points,
-                title,
-                url,
-                objectID,
-                hidden: false,
-              }
-          )
-          .filter(Boolean)
-      );
-    }
-  );
-
-  const handlePage = (direction: number) => {
-    setCurrPage((prevCurrPage) => (prevCurrPage + direction + pages) % pages);
-  };
-
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-  };
-
-  useEffect(() => {
-    setCurrPage(0);
-  }, [debouncedQuery]);
+  const {
+    news,
+    setNews,
+    pages,
+    query,
+    handleSearch,
+    currPage,
+    handlePage,
+    isLoading,
+  } = useContext(NewsContext);
 
   return (
     <main className="bg-gray-100 min-h-screen">
