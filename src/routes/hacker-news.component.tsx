@@ -1,6 +1,8 @@
 import axios from 'axios';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useEffect } from 'react';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
+import { Link } from 'react-router-dom';
+import { useDebounce } from 'usehooks-ts';
 
 type Article = {
   author: string;
@@ -9,6 +11,7 @@ type Article = {
   points: number;
   title: string;
   url: string;
+  hidden: boolean;
 };
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?';
@@ -24,43 +27,56 @@ const HackerNews = () => {
 };
 
 const Home = () => {
-  const [query, setQuery] = useState('react');
+  const [news, setNews] = useState([] as Article[]);
   const [pages, setPages] = useState(0);
-  const [currPage, setCurrPage] = useState(1);
 
-  const { data, isLoading } = useQuery(
-    ['articles', query, currPage],
+  const [query, setQuery] = useState('react');
+  const [currPage, setCurrPage] = useState(0);
+
+  const debouncedQuery = useDebounce(query, 1000);
+
+  const { isLoading } = useQuery(
+    ['articles', debouncedQuery, currPage],
     async () => {
-      const url_ = `${API_ENDPOINT}query=${query}&page=${currPage}`;
+      const url = `${API_ENDPOINT}query=${query.replace(
+        ' ',
+        '-'
+      )}&page=${currPage}`;
       const {
         data: { hits, nbPages },
-      } = await axios.get(url_);
+      } = await axios.get(url);
 
       setPages(nbPages);
-
-      return hits.map(
-        ({ author, num_comments, points, title, url, objectID }: Article) => ({
-          author,
-          num_comments,
-          points,
-          title,
-          url,
-          objectID,
-        })
+      setNews(
+        hits
+          .map(
+            ({ author, num_comments, points, title, url, objectID }: Article) =>
+              title !== null && {
+                author,
+                num_comments,
+                points,
+                title,
+                url,
+                objectID,
+                hidden: false,
+              }
+          )
+          .filter(Boolean)
       );
     }
   );
 
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    setCurrPage(1);
+  const handlePage = (direction: number) => {
+    setCurrPage((prevCurrPage) => (prevCurrPage + direction + pages) % pages);
   };
 
-  const handlePage = (direction: number) => {
-    setCurrPage(
-      (prevCurrPage) => ((prevCurrPage - 1 + direction + pages) % pages) + 1
-    );
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
   };
+
+  useEffect(() => {
+    setCurrPage(0);
+  }, [debouncedQuery]);
 
   return (
     <main className="bg-gray-100 min-h-screen">
@@ -80,7 +96,7 @@ const Home = () => {
         </form>
 
         {isLoading ? (
-          <div className="mx-auto w-16 h-16 rounded-full border-[3px] border-gray-700 border-t-gray-300 animate-[spin_1.5s_ease-in-out_infinite] mt-20"></div>
+          <div className="mx-auto w-16 h-16 rounded-full border-[3px] border-gray-300 border-t-gray-700 will-change-transform animate-[spin_1.5s_ease-in-out_infinite] mt-20"></div>
         ) : (
           <>
             <div className="text-center select-none my-12">
@@ -91,7 +107,7 @@ const Home = () => {
                 prev
               </span>
               <span className="mx-4 text-gray-800 font-bold text-lg">
-                {currPage} of {pages}
+                {currPage + 1} of {pages}
               </span>
               <span
                 className="px-2 py-1 capitalize bg-[#49a6e9] text-white cursor-pointer rounded-[4px] tracking-widest"
@@ -102,34 +118,54 @@ const Home = () => {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8 max-w-6xl">
-              {data &&
-                data.map(
-                  ({
-                    author,
-                    num_comments,
-                    points,
-                    title,
-                    url,
-                    objectID,
-                  }: Article) => (
-                    <div
-                      key={objectID}
-                      className="bg-white rounded-lg px-8 py-4"
-                    >
-                      <h3 className="capitalize tracking-widest font-bold text-gray-800">
-                        {title}
-                      </h3>
-                      <p className="mt-1 mb-2 text-gray-400">
-                        ${points} points by ${author} | ${num_comments} comments
-                      </p>
-                      <div className="capitalize text-sm">
-                        <a href={url} className="text-[#49a6e9]">
-                          read more
-                        </a>
-                        <button className="ml-3 text-[#bb2525]">remove</button>
+              {news &&
+                news.map(
+                  (
+                    {
+                      author,
+                      num_comments,
+                      points,
+                      title,
+                      url,
+                      objectID,
+                      hidden,
+                    }: Article,
+                    idx
+                  ) =>
+                    !hidden && (
+                      <div
+                        key={objectID + url}
+                        className="bg-white rounded-lg px-8 py-4"
+                      >
+                        <h3 className="capitalize tracking-widest font-bold text-gray-800">
+                          {title}
+                        </h3>
+                        <p className="mt-1 mb-2 text-gray-400">
+                          {points} points by {author} | {num_comments} comments
+                        </p>
+                        <div className="capitalize text-sm">
+                          <a
+                            href={url}
+                            target="_blank"
+                            className="text-[#49a6e9]"
+                          >
+                            read more
+                          </a>
+                          <button
+                            className="ml-3 text-[#bb2525]"
+                            onClick={() => {
+                              setNews((prevNews) =>
+                                prevNews.map((i, idx_) =>
+                                  idx !== idx_ ? i : { ...i, hidden: true }
+                                )
+                              );
+                            }}
+                          >
+                            remove
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )
+                    )
                 )}
             </div>
           </>
