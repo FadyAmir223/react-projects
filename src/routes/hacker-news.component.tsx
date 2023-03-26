@@ -112,8 +112,8 @@ const Home = () => {
                           <button
                             className="ml-3 text-[#bb2525]"
                             onClick={() => {
-                              setNews((prevNews) =>
-                                prevNews.map((i, idx_) =>
+                              setNews(
+                                news.map((i, idx_) =>
                                   idx !== idx_ ? i : { ...i, hidden: true }
                                 )
                               );

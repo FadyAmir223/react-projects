@@ -2,14 +2,12 @@ import axios from 'axios';
 import {
   createContext,
   useEffect,
-  useState,
   ChangeEvent,
-  Dispatch,
-  SetStateAction,
   ReactNode,
+  useReducer,
 } from 'react';
 import { useQuery } from 'react-query';
-import useDebounce from 'usehooks-ts/dist/esm/useDebounce/useDebounce';
+import { useDebounce } from 'usehooks-ts';
 
 export type Article = {
   author: string;
@@ -21,15 +19,24 @@ export type Article = {
   hidden: boolean;
 };
 
-type News = {
+type State = {
   news: Article[];
-  setNews: Dispatch<SetStateAction<Article[]>>;
   pages: number;
   query: string;
-  handleSearch: (e: ChangeEvent<HTMLInputElement>) => void;
   currPage: number;
-  handlePage: (direction: number) => void;
+};
+
+type Action =
+  | { type: 'SET_NEWS'; payload: Article[] }
+  | { type: 'SET_PAGES'; payload: number }
+  | { type: 'SET_QUERY'; payload: string }
+  | { type: 'SET_CURRPAGE'; payload: number };
+
+type News = State & {
   isLoading: boolean;
+  setNews: (paylaod: Article[]) => void;
+  handleSearch: (e: ChangeEvent<HTMLInputElement>) => void;
+  handlePage: (direction: number) => void;
 };
 
 export const NewsContext = createContext<News>({
@@ -43,20 +50,45 @@ export const NewsContext = createContext<News>({
   isLoading: false,
 });
 
-const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?';
+const reducer = (state: State, action: Action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case 'SET_NEWS':
+      return { ...state, news: payload };
+    case 'SET_PAGES':
+      return { ...state, pages: payload };
+    case 'SET_QUERY':
+      return { ...state, query: payload };
+    case 'SET_CURRPAGE':
+      return { ...state, currPage: payload };
+    default:
+      return state;
+  }
+};
 
 export const NewsProvider = ({ children }: { children: ReactNode }) => {
-  const [news, setNews] = useState([] as Article[]);
-  const [pages, setPages] = useState(0);
+  const initState = {
+    news: [],
+    pages: 0,
+    query: 'react',
+    currPage: 0,
+  };
 
-  const [query, setQuery] = useState('react');
-  const [currPage, setCurrPage] = useState(0);
+  const [{ news, pages, query, currPage }, dispatch] = useReducer(
+    reducer,
+    initState
+  );
 
   const debouncedQuery = useDebounce(query, 500);
+
+  const setNews = (payload: Article[]) =>
+    dispatch({ type: 'SET_NEWS', payload });
 
   const { isLoading } = useQuery(
     ['articles', debouncedQuery, currPage],
     async () => {
+      const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?';
       const url = `${API_ENDPOINT}query=${query.replace(
         ' ',
         '-'
@@ -65,7 +97,8 @@ export const NewsProvider = ({ children }: { children: ReactNode }) => {
         data: { hits, nbPages },
       } = await axios.get(url);
 
-      setPages(nbPages);
+      dispatch({ type: 'SET_PAGES', payload: nbPages });
+
       setNews(
         hits
           .map(
@@ -86,15 +119,18 @@ export const NewsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const handlePage = (direction: number) => {
-    setCurrPage((prevCurrPage) => (prevCurrPage + direction + pages) % pages);
+    dispatch({
+      type: 'SET_CURRPAGE',
+      payload: (currPage + direction + pages) % pages,
+    });
   };
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+    dispatch({ type: 'SET_QUERY', payload: e.target.value });
   };
 
   useEffect(() => {
-    setCurrPage(0);
+    dispatch({ type: 'SET_CURRPAGE', payload: 0 });
   }, [debouncedQuery]);
 
   const value = {
