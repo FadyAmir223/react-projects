@@ -66,9 +66,9 @@ const routes = [
   <MarkdownPreview />,
   <RandomPerson />,
   <Pagination />,
-
   <StockPhotos />,
   <DarkMode />,
+
   <MoviesDB />,
   <HackerNews />,
   <Quiz />,

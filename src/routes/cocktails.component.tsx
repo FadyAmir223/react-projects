@@ -204,9 +204,7 @@ const Details = () => {
                   ) : (
                     Array.isArray(value) &&
                     value.map((ingredient: string) => (
-                      <span key={ingredient} className="">
-                        {ingredient}
-                      </span>
+                      <span key={ingredient}>{ingredient}</span>
                     ))
                   )}
                 </div>

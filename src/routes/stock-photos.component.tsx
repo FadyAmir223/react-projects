@@ -194,7 +194,7 @@ const StockPhotos = () => {
                   <h4 className="font-bold tracking-widest capitalize mb-2">
                     {name}
                   </h4>
-                  <p className="">{likes} likes</p>
+                  <p>{likes} likes</p>
                 </div>
                 <a href={portfolio_url}>
                   <img

@@ -111,7 +111,7 @@ const Header = () => {
                 <h3 className="text-lg text-blue-700 mb-2 tracking-widest">
                   {i}
                 </h3>
-                <div className="">
+                <div>
                   {navLinks[i].map((j) => (
                     <Link
                       key={`${i + j}`}
@@ -138,7 +138,7 @@ const Home = () => {
       className="container px-6 mx-auto grid place-items-center text-center"
       style={{ height: `calc(100vh - ${headerHeight})` }}
     >
-      <div className="">
+      <div>
         <h1 className="capitalize text-6xl font-bold leading-[70px] mb-5 max-w-2xl">
           manage any content any where
         </h1>

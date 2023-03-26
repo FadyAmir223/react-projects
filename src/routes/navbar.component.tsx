@@ -78,7 +78,7 @@ const Sidebar = ({ isHeader = true }: { isHeader?: boolean }) => {
         style={{ gridTemplateRows: `auto 1fr auto` }}
       >
         <div className="flex justify-between items-center px-5">
-          <span className="">LOGO</span>
+          <span>LOGO</span>
           <FaTimes
             className="inline-block scale-150 text-red-600 cursor-pointer"
             onClick={() => setIsSidebarOpen(false)}

@@ -48,7 +48,7 @@ const Cart_ = () => {
   }, []);
 
   return (
-    <main className="">
+    <main>
       <header className="bg-blue-600">
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
           <span className="text-2xl tracking-wider">UseReducer</span>
@@ -70,7 +70,7 @@ const Cart_ = () => {
 
         {cartData.length !== 0 ? (
           <>
-            <div className="">
+            <div>
               {cartData.map((cartItem: CartData) => (
                 <CartItem key={cartItem.id} {...cartItem} />
               ))}
@@ -118,7 +118,7 @@ const CartItem = memo(({ id, img, title, price, amount }: CartData) => {
     <div key={id} className="flex justify-between items-center mb-4 last:mb-0">
       <div className="flex items-center">
         <img src={img} alt={title} className="mr-6 h-20" />
-        <div className="">
+        <div>
           <h5 className="tracking-widest text-gray-700 -mb-[2px]">{title}</h5>
           <span className="text-gray-500 flex items-center relative -left-[3px] top-[2px] text-[15px]">
             <BiDollar className="inline-block relative -top-[1px]" />
@@ -137,7 +137,7 @@ const CartItem = memo(({ id, img, title, price, amount }: CartData) => {
           className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
           onClick={() => incrementItem_(title)}
         />
-        <span className="">{amount}</span>
+        <span>{amount}</span>
         <IoIosArrowDown
           className="scale-150 cursor-pointer text-blue-600 hover:text-blue-400 duration-200"
           onClick={() => decrementItem_(title)}
