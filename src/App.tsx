@@ -69,8 +69,8 @@ const routes = [
   <StockPhotos />,
   <DarkMode />,
   <MoviesDB />,
-
   <HackerNews />,
+
   <Quiz />,
 ];
 
